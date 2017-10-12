@@ -29,7 +29,7 @@ class SteamUserService
     {
         $userdata = $this->getUserData($user->getUsername());
         $user->setNickname($userdata['personaname']);
-        $user->setAvatar($userdata['avatar']);
+        $user->setAvatar($userdata['avatarmedium']);
         return $user;
     }
 }
