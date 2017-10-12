@@ -18,6 +18,9 @@ class LoginListener
         $user = $event->getAuthenticationToken()->getUser();
 
         $userService->updateUserEntry($user);
+        
+        $this->em->persist($user);
+        $this->em->flush($user);
     }
 
 }
