@@ -31,12 +31,11 @@ class SteamUserProvider implements UserProviderInterface
             $user = new $this->userClass();
             $user->setUsername($username);
             $user->setPassword(base64_encode(random_bytes(20)));
+            $this->userService->updateUserEntry($user);
+
+            $this->em->persist($user);
+            $this->em->flush($user);
         }
-        
-        $this->userService->updateUserEntry($user);
-        
-        $this->em->persist($user);
-        $this->em->flush($user);
 
         return $user;
     }

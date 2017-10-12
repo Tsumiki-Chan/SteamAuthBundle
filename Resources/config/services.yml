@@ -20,4 +20,11 @@ services:
 
     steam.user_service:
         class: SteamAuthBundle\Service\SteamUserService
-        arguments: [ '@guzzle.client.steam_user', '%steam_auth.steam_key%' ]
+        arguments: [ '@guzzle.client.steam_user', '%steam_auth.steam_key%' ] 
+
+#   Our Custom login event
+    steam.login_event_listener:
+        class: SteamAuthBundle\Listener\LoginListener
+        arguments: ['@doctrine.orm.default_entity_manager', '@steam.user_service']
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.interactive_login' }
