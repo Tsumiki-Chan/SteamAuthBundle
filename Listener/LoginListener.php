@@ -2,6 +2,10 @@
 
 namespace SteamAuthBundle\Listener;
 
+use Doctrine\ORM\EntityManager;
+use SteamAuthBundle\Service\SteamUserService;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+
 class LoginListener 
 {
 
