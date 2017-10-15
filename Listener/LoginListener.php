@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use SteamAuthBundle\Service\SteamUserService;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Securety\Core\Event\AuthenticationEvent;
+use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
 class LoginListener 
 {
