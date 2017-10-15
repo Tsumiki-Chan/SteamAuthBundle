@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use SteamAuthBundle\Service\SteamUserService;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Securety\Core\Event\AuthenticationEvent;
 
 class LoginListener 
 {
@@ -14,9 +15,13 @@ class LoginListener
         $this->logger = $logger;
         $this->userService = $userService;
         $this->em = $em;
+
+        $this->logger->info("LoginListener! __construct");
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event) {
+    public function onSecurityInteractivelogin(InteractiveLoginEvent $event) {
+        $this->logger->info("LoginListener! InteractiveLoginEvent");
+
         $user = $event->getAuthenticationToken()->getUser();
 
         $userService->updateUserEntry($user);
@@ -25,4 +30,8 @@ class LoginListener
         $this->em->flush($user);
     }
 
+    public function onSecurityAuthenticationSuccess(AuthenticationEvent $event) {        
+        $this->logger->info("LoginListener! AuthenticationSuccess");
+
+    }
 }
