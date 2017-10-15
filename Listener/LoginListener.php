@@ -7,6 +7,7 @@ use Monolog\Logger;
 use SteamAuthBundle\Service\SteamUserService;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
+use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 
 class LoginListener 
 {
@@ -32,6 +33,11 @@ class LoginListener
 
     public function onSecurityAuthenticationSuccess(AuthenticationEvent $event) {        
         $this->logger->info("LoginListener! AuthenticationSuccess");
+
+    }
+
+    public function onSecurityAuthenticationFailure(AuthenticationFailureEvent $event) {        
+        $this->logger->info("LoginListener! AuthenticationFailure");
 
     }
 }
