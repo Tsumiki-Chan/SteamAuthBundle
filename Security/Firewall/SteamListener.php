@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Router;
 use SteamAuthBundle\Security\Token\SteamToken;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 
 class SteamListener implements ListenerInterface
 {
