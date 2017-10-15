@@ -12,6 +12,10 @@ use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 class LoginListener 
 {
 
+    private $logger;
+    private $userService;
+    private $em;
+
     public function __construct(Logger $logger, EntityManager $em, SteamUserService $userService) {
         $this->logger = $logger;
         $this->userService = $userService;
@@ -29,15 +33,5 @@ class LoginListener
         
         $this->em->persist($user);
         $this->em->flush($user);
-    }
-
-    public function onSecurityAuthenticationSuccess(AuthenticationEvent $event) {        
-        $this->logger->info("LoginListener! AuthenticationSuccess");
-
-    }
-
-    public function onSecurityAuthenticationFailure(AuthenticationFailureEvent $event) {        
-        $this->logger->info("LoginListener! AuthenticationFailure");
-
     }
 }

@@ -12,6 +12,8 @@ use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Routing\Router;
 use SteamAuthBundle\Security\Token\SteamToken;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class SteamListener implements ListenerInterface
 {
@@ -23,13 +25,15 @@ class SteamListener implements ListenerInterface
     private $rememberMeServices;
     private $providerKey;
     private $defaultRoute;
+    private $dispatcher;
 
-    public function __construct($defaultRoute, TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, Router $router)
+    public function __construct($defaultRoute, TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, Router $router, EventDispatcherInterface $dispatcher)
     {
         $this->defaultRoute = $defaultRoute;
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->router = $router;
+        $this->dispatcher = $dispatcher;
     }
 
     public function setProviderKey($providerKey)
@@ -58,8 +62,23 @@ class SteamListener implements ListenerInterface
         $token->setUsername(str_replace("http://steamcommunity.com/openid/id/", "", $request->query->get('openid_claimed_id')));
         $token->setAttributes($request->query->all());
 
+        try {
+            
+        } catch (AuthenticationException $failed) {
+            $token = $this->tokenStorage->getToken();
+            if ($token instanceof SteamToken && $this->providerKey === $token->getProviderKey()) {
+                $this->tokenStorage->setToken(null);
+            }
+            return;
+        }
+
         $authToken = $this->authenticationManager->authenticate($token);
         $this->tokenStorage->setToken($authToken);
+
+        if (null !== $this->dispatcher) {
+            $loginEvent = new InteractiveLoginEvent($request, $token);
+            $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+        }
 
         $targetPath = $this->getTargetPath($request->getSession(), $this->providerKey);
         if ($targetPath !== null) {
